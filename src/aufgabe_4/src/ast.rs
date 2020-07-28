@@ -1,4 +1,7 @@
 use std::string::String;
+use std::boxed::Box;
+
+pub type ExprBox =  Box<dyn Expr>;
 
 #[derive(Eq, PartialEq, Debug)]
 pub enum ExprType {
@@ -42,12 +45,12 @@ impl IntExpr {
     }
 }
 
-pub struct PlusExpr<T: Expr, U: Expr> {
-    pub e1: T,
-    pub e2: U,
+pub struct PlusExpr {
+    pub e1: ExprBox,
+    pub e2: ExprBox,
 }
 
-impl<T: Expr, U: Expr> Expr for PlusExpr<T, U> {
+impl Expr for PlusExpr {
     fn eval(&self) -> i32 {
         self.e1.eval() + self.e2.eval()
     }
@@ -68,18 +71,25 @@ impl<T: Expr, U: Expr> Expr for PlusExpr<T, U> {
     }
 }
 
-impl<T: Expr, U: Expr> PlusExpr<T, U> {
-    pub fn new(e1: T, e2: U) -> PlusExpr<T, U> {
-        PlusExpr { e1, e2 }
+impl PlusExpr {
+    pub fn new<T: Expr + 'static, U: Expr + 'static>(e1: T, e2: U) -> PlusExpr {
+        PlusExpr {e1: Box::new(e1), e2: Box::new(e2) }
+    }
+
+    pub fn new_box(e1: ExprBox, e2: ExprBox) -> PlusExpr {
+        PlusExpr {
+            e1,
+            e2
+        }
     }
 }
 
-pub struct MulExpr<T: Expr, U: Expr> {
-    pub e1: T,
-    pub e2: U,
+pub struct MulExpr {
+    pub e1: ExprBox,
+    pub e2: ExprBox,
 }
 
-impl<T: Expr, U: Expr> Expr for MulExpr<T, U> {
+impl Expr for MulExpr {
     fn eval(&self) -> i32 {
         self.e1.eval() * self.e2.eval()
     }
@@ -93,7 +103,7 @@ impl<T: Expr, U: Expr> Expr for MulExpr<T, U> {
     }
 
     fn pretty_clever(&self) -> String {
-        fn pretty_val<E: Expr>(e: &E) -> String {
+        fn pretty_val(e: &ExprBox) -> String {
             if let ExprType::Plus = e.expr_type() {
                 format!("({})", e.pretty_clever())
             } else {
@@ -108,9 +118,16 @@ impl<T: Expr, U: Expr> Expr for MulExpr<T, U> {
     }
 }
 
-impl<T: Expr, U: Expr> MulExpr<T, U> {
-    pub fn new(e1: T, e2: U) -> MulExpr<T, U> {
-        MulExpr { e1, e2 }
+impl MulExpr {
+    pub fn new<T: Expr + 'static, U: Expr + 'static>(e1: T, e2: U) -> MulExpr {
+        MulExpr { e1: Box::new(e1), e2: Box::new(e2) }
+    }
+
+    pub fn new_box(e1: ExprBox, e2: ExprBox) -> MulExpr {
+        MulExpr {
+            e1,
+            e2
+        }
     }
 }
 
