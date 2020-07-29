@@ -1,7 +1,7 @@
 use crate::ast::{ExprBox, IntExpr, MulExpr, PlusExpr};
 use crate::tokenizer::{TokenT, Tokenizer};
 
-struct Parser {
+pub struct Parser {
     tokenizer: Tokenizer,
 }
 
@@ -135,7 +135,7 @@ mod tests {
 
     #[test]
     fn test_parse_8() {
-        assert_eq!("nothing", display_full("Foo") );
+        assert_eq!("nothing", display_full("Foo"));
     }
 
     #[test]

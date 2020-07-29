@@ -1,28 +1,25 @@
-mod ast;
-mod tokenizer;
-
-use ast::{Expr, IntExpr, MulExpr, PlusExpr};
-use tokenizer::{Tokenize, Tokenizer};
+use aufgabe_4::ast::{Expr, ExprBox, IntExpr, MulExpr, PlusExpr};
+use aufgabe_4::parser::Parser;
+use aufgabe_4::tokenizer::{Tokenize, Tokenizer};
+use aufgabe_4::vm::VM;
 
 fn main() {
     fn print<T: Expr>(expr: &T) {
-        println!("Expr '{}' to clever:= '{}', eval:= {}", expr.pretty(), expr.pretty_clever(), expr.eval());
+        println!(
+            "Expr '{}' to clever:= '{}', eval:= {}",
+            expr.pretty(),
+            expr.pretty_clever(),
+            expr.eval()
+        );
     }
 
-    let plus = PlusExpr::new (
-        IntExpr::new( 5) ,
-        PlusExpr::new(
-            IntExpr { val: 10 },
-            IntExpr { val: 3 })
+    let plus = PlusExpr::new(
+        IntExpr::new(5),
+        PlusExpr::new(IntExpr { val: 10 }, IntExpr { val: 3 }),
     );
     print(&plus);
 
-    let mul = MulExpr::new(
-        IntExpr { val: 7 },
-        MulExpr::new(
-            plus,
-            IntExpr { val: 2 })
-    );
+    let mul = MulExpr::new(IntExpr { val: 7 }, MulExpr::new(plus, IntExpr { val: 2 }));
     print(&mul);
     println!();
 
@@ -62,5 +59,28 @@ fn main() {
     for _i in 0..10 {
         println!("{}", bar.token);
         bar.next_token();
+    }
+
+    {
+        let expr = Parser::new("1 + 2 * (2 * 1)".to_string()).parse().unwrap();
+        let mut vm: VM = VM::from(&expr);
+        println!(
+            "VM of '{}' := {}. Eval(VM):= {}, eval(exp) := {}",
+            expr.pretty(),
+            vm.to_string(),
+            vm.run().unwrap(),
+            expr.eval()
+        );
+    }
+    {
+        let expr: ExprBox = Box::new(mul);
+        let mut vm: VM = VM::from(&expr);
+        println!(
+            "VM of '{}' := {}. Eval(VM):= {}, eval(exp) := {}",
+            expr.pretty(),
+            vm.to_string(),
+            vm.run().unwrap(),
+            expr.eval()
+        );
     }
 }

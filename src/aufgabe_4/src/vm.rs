@@ -1,28 +1,39 @@
-use OpCode::{PUSH, PLUS, MUL};
+use crate::ast::ExprBox;
+use crate::parser::Parser;
+use crate::vm_parser::VMParser;
+use std::convert::TryFrom;
+use std::fmt::{Display, Formatter};
+use OpCode::{MUL, PLUS, PUSH};
 
+#[derive(Debug)]
 pub enum OpCode {
     PUSH,
     PLUS,
-    MUL
+    MUL,
 }
 
+#[derive(Debug)]
 pub struct Code {
     pub kind: OpCode,
-    pub val: i32
+    pub val: i32,
 }
 
 impl Code {
     pub fn new(kind: OpCode) -> Code {
-        Code {
-            kind,
-            val: 0
-        }
+        Code { kind, val: 0 }
     }
 
     pub fn new_val(kind: OpCode, val: i32) -> Code {
-        Code {
-            kind,
-            val
+        Code { kind, val }
+    }
+}
+
+impl Display for Code {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        if let PUSH = self.kind {
+            write!(f, "{:?}({})", self.kind, self.val)
+        } else {
+            write!(f, "{:?}", self.kind)
         }
     }
 }
@@ -39,17 +50,17 @@ pub fn new_mul() -> Code {
     Code::new(MUL)
 }
 
-
+#[derive(Debug)]
 pub struct VM {
     code: Vec<Code>,
-    stack: Vec<i32>
+    stack: Vec<i32>,
 }
 
 impl VM {
     pub fn new(code: Vec<Code>) -> VM {
         VM {
             code,
-            stack: Vec::new()
+            stack: Vec::new(),
         }
     }
 
@@ -58,21 +69,19 @@ impl VM {
 
         for c in &self.code {
             match c.kind {
-                PUSH => {
-                    self.stack.push(c.val)
-                },
+                PUSH => self.stack.push(c.val),
                 MUL => {
                     let right = self.stack.pop();
                     let left = self.stack.pop();
                     if let (Some(r), Some(l)) = (right, left) {
-                        self.stack.push(r*l);
+                        self.stack.push(r * l);
                     }
-                },
+                }
                 PLUS => {
                     let right = self.stack.pop();
                     let left = self.stack.pop();
                     if let (Some(r), Some(l)) = (right, left) {
-                        self.stack.push(r+l);
+                        self.stack.push(r + l);
                     }
                 }
             }
@@ -80,8 +89,37 @@ impl VM {
 
         match self.stack.last() {
             None => None,
-            Some(v) => Some(*v)
+            Some(v) => Some(*v),
         }
+    }
+}
+
+impl TryFrom<&str> for VM {
+    type Error = ();
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let expr = Parser::new(value.to_string()).parse();
+        match expr {
+            None => Err(()),
+            Some(e) => Ok(Self::from(&e)),
+        }
+    }
+}
+
+impl From<&ExprBox> for VM {
+    fn from(e: &ExprBox) -> Self {
+        VMParser::new().parse(e)
+    }
+}
+
+impl Display for VM {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "VM[ ")?;
+        for c in &self.code {
+            write!(f, "{}, ", c)?
+        }
+        write!(f, "]")?;
+        Ok(())
     }
 }
 
@@ -93,16 +131,16 @@ mod tests {
         print!("VM stack (top): ");
         match r {
             None => println!("{}", "empty"),
-            Some(t) => println!("{}", t)
+            Some(t) => println!("{}", t),
         }
     }
 
     #[test]
     fn test_vm_1() {
-            let vc = vec![new_push(1), new_push(2), new_push(3), new_mul(), new_plus()];
-            let res = VM::new(vc).run();
+        let vc = vec![new_push(1), new_push(2), new_push(3), new_mul(), new_plus()];
+        let res = VM::new(vc).run();
 
-            show_vm_res(&res);
+        show_vm_res(&res);
         assert_eq!(Some(7), res);
     }
 

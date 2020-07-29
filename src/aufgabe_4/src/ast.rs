@@ -1,7 +1,6 @@
-use std::string::String;
 use std::boxed::Box;
 
-pub type ExprBox =  Box<dyn Expr>;
+pub type ExprBox = Box<dyn Expr>;
 
 #[derive(Eq, PartialEq, Debug)]
 pub enum ExprType {
@@ -15,6 +14,7 @@ pub trait Expr {
     fn pretty(&self) -> String;
     fn expr_type(&self) -> ExprType;
     fn pretty_clever(&self) -> String;
+    fn as_any(&self) -> &dyn std::any::Any;
 }
 
 pub struct IntExpr {
@@ -36,6 +36,10 @@ impl Expr for IntExpr {
 
     fn pretty_clever(&self) -> String {
         self.pretty()
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -69,18 +73,22 @@ impl Expr for PlusExpr {
 
         format!("{} + {}", e1_pretty, e2_pretty)
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl PlusExpr {
     pub fn new<T: Expr + 'static, U: Expr + 'static>(e1: T, e2: U) -> PlusExpr {
-        PlusExpr {e1: Box::new(e1), e2: Box::new(e2) }
+        PlusExpr {
+            e1: Box::new(e1),
+            e2: Box::new(e2),
+        }
     }
 
     pub fn new_box(e1: ExprBox, e2: ExprBox) -> PlusExpr {
-        PlusExpr {
-            e1,
-            e2
-        }
+        PlusExpr { e1, e2 }
     }
 }
 
@@ -116,18 +124,22 @@ impl Expr for MulExpr {
 
         format!("{} * {}", e1_pretty, e2_pretty)
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl MulExpr {
     pub fn new<T: Expr + 'static, U: Expr + 'static>(e1: T, e2: U) -> MulExpr {
-        MulExpr { e1: Box::new(e1), e2: Box::new(e2) }
+        MulExpr {
+            e1: Box::new(e1),
+            e2: Box::new(e2),
+        }
     }
 
     pub fn new_box(e1: ExprBox, e2: ExprBox) -> MulExpr {
-        MulExpr {
-            e1,
-            e2
-        }
+        MulExpr { e1, e2 }
     }
 }
 
@@ -167,9 +179,9 @@ mod tests {
 
         #[test]
         fn eval_int() {
-            let int = IntExpr::new(10);
+            let e = IntExpr::new(10);
 
-            assert_eq!(int.eval(), 10);
+            assert_eq!(e.eval(), 10);
         }
 
         #[test]

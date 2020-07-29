@@ -10,7 +10,7 @@ pub enum TokenT {
     OPEN,
     CLOSE,
     PLUS,
-    MUL
+    MUL,
 }
 
 impl Display for TokenT {
@@ -21,15 +21,12 @@ impl Display for TokenT {
 
 pub struct Tokenize {
     s: String,
-    pos: usize
+    pos: usize,
 }
 
 impl Tokenize {
     pub fn new(s: String) -> Tokenize {
-        Tokenize{
-            s,
-            pos: 0
-        }
+        Tokenize { s, pos: 0 }
     }
 
     pub fn show(&mut self) -> String {
@@ -53,7 +50,7 @@ impl Iterator for Tokenize {
             }
 
             let c = self.s.chars().nth(self.pos);
-            self.pos +=1;
+            self.pos += 1;
             match c {
                 Some('0') => return Some(TokenT::ZERO),
                 Some('1') => return Some(TokenT::ONE),
@@ -63,7 +60,7 @@ impl Iterator for Tokenize {
                 Some('+') => return Some(TokenT::PLUS),
                 Some('*') => return Some(TokenT::MUL),
                 None => return None,
-                _ => ()
+                _ => (),
             }
         }
     }
@@ -71,17 +68,14 @@ impl Iterator for Tokenize {
 
 pub struct Tokenizer {
     pub token: TokenT,
-    tokenize: Tokenize
+    tokenize: Tokenize,
 }
 
 impl Tokenizer {
     pub fn new(s: String) -> Tokenizer {
         let mut tokenize = Tokenize::new(s);
         let token = tokenize.next().unwrap_or(TokenT::EOS);
-        Tokenizer {
-            tokenize,
-            token
-        }
+        Tokenizer { tokenize, token }
     }
 
     pub fn next_token(&mut self) {
@@ -89,7 +83,7 @@ impl Tokenizer {
     }
 }
 
-impl Deref for Tokenizer{
+impl Deref for Tokenizer {
     type Target = Tokenize;
 
     fn deref(&self) -> &Self::Target {
