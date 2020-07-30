@@ -7,7 +7,8 @@ use OpCode::{MUL, PLUS, PUSH};
 
 #[derive(Debug)]
 pub enum OpCode {
-    PUSH,
+    // Enthält direkt den Wert von PUSH ohne eine extra Feld in Code zu benötigen
+    PUSH(i32),
     PLUS,
     MUL,
 }
@@ -15,31 +16,26 @@ pub enum OpCode {
 #[derive(Debug)]
 pub struct Code {
     pub kind: OpCode,
-    pub val: i32,
 }
 
 impl Code {
     pub fn new(kind: OpCode) -> Code {
-        Code { kind, val: 0 }
+        Code { kind }
     }
 
-    pub fn new_val(kind: OpCode, val: i32) -> Code {
-        Code { kind, val }
+    pub fn new_val(val: i32) -> Code {
+        Code { kind: PUSH(val) }
     }
 }
 
 impl Display for Code {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        if let PUSH = self.kind {
-            write!(f, "{:?}({})", self.kind, self.val)
-        } else {
-            write!(f, "{:?}", self.kind)
-        }
+        write!(f, "{:?}", self.kind)
     }
 }
 
 pub fn new_push(val: i32) -> Code {
-    Code::new_val(PUSH, val)
+    Code::new_val(val)
 }
 
 pub fn new_plus() -> Code {
@@ -69,7 +65,7 @@ impl VM {
 
         for c in &self.code {
             match c.kind {
-                PUSH => self.stack.push(c.val),
+                PUSH(val) => self.stack.push(val),
                 MUL => {
                     let right = self.stack.pop();
                     let left = self.stack.pop();
@@ -94,6 +90,8 @@ impl VM {
     }
 }
 
+// Erlaubt das direkt Konvertieren eines &str zu einer VM
+// Verwendet dafür parser zum Konvertieren auf Expr und anschließend vm_parser zum parsen von Expr zu VM
 impl TryFrom<&str> for VM {
     type Error = ();
 
@@ -106,6 +104,7 @@ impl TryFrom<&str> for VM {
     }
 }
 
+// Erlaubt das direkt parsen einer &ExprBox zu einer VM mithilfe von vm_parser
 impl From<&ExprBox> for VM {
     fn from(e: &ExprBox) -> Self {
         VMParser::new().parse(e)
@@ -116,13 +115,15 @@ impl Display for VM {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "VM[ ")?;
         for c in &self.code {
-            write!(f, "{}, ", c)?
+            write!(f, "{}, ", c)?;
         }
         write!(f, "]")?;
         Ok(())
     }
 }
 
+// Tests aus testVM mit zusätzlichen Tests
+// Unit-test. Enthält Ausgaben zum Betrachten der Ausführung
 #[cfg(test)]
 mod tests {
     use super::*;

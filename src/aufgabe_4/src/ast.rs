@@ -1,7 +1,10 @@
 use std::boxed::Box;
 
+// Type alias
 pub type ExprBox = Box<dyn Expr>;
 
+// Eq und PartialEQ erlauben das vergleichen von ExprType Werten via == oder !=
+// Debug erlaubt das darstellen eines Enum-Wertes als String. z.B. ExprType::Int:= 'Int'
 #[derive(Eq, PartialEq, Debug)]
 pub enum ExprType {
     Int,
@@ -9,11 +12,16 @@ pub enum ExprType {
     Mul,
 }
 
+// Interface für Expr
 pub trait Expr {
     fn eval(&self) -> i32;
+    // vorgegeben pretty implementierung
     fn pretty(&self) -> String;
+    // dient zum erkennen des Typs der Expr
     fn expr_type(&self) -> ExprType;
+    // Teilaufgabe 1 Syntax. pretty mit schlauerer klammerung
     fn pretty_clever(&self) -> String;
+    // wird zum cast einer trait reference zu dem eigentlichen Struct des Objekts benötigt
     fn as_any(&self) -> &dyn std::any::Any;
 }
 
@@ -34,6 +42,7 @@ impl Expr for IntExpr {
         ExprType::Int
     }
 
+    // Keine klammerung vorhanden -> Identische ausgabe wie pretty()
     fn pretty_clever(&self) -> String {
         self.pretty()
     }
@@ -49,6 +58,7 @@ impl IntExpr {
     }
 }
 
+// Speichert e1 und e2 als Box<dyn Expr> mit ownership der Box
 pub struct PlusExpr {
     pub e1: ExprBox,
     pub e2: ExprBox,
@@ -67,6 +77,8 @@ impl Expr for PlusExpr {
         ExprType::Plus
     }
 
+    // Bei + wird nie eine klammerung um e1 und e2 benötigt
+    // Recursive wird pretty_clever() auf e1 und e2 angewandt
     fn pretty_clever(&self) -> String {
         let e1_pretty = self.e1.pretty_clever();
         let e2_pretty = self.e2.pretty_clever();
@@ -80,6 +92,7 @@ impl Expr for PlusExpr {
 }
 
 impl PlusExpr {
+    // Template funktion, erlaubt ausdrücke wie PlusExpr::new(IntExpr::new(1), IntExpr::new(2)), übernimmt ownership von e1 und e2
     pub fn new<T: Expr + 'static, U: Expr + 'static>(e1: T, e2: U) -> PlusExpr {
         PlusExpr {
             e1: Box::new(e1),
@@ -87,6 +100,7 @@ impl PlusExpr {
         }
     }
 
+    // Parameter direkt als Box, übernimmt ownership
     pub fn new_box(e1: ExprBox, e2: ExprBox) -> PlusExpr {
         PlusExpr { e1, e2 }
     }
@@ -110,7 +124,11 @@ impl Expr for MulExpr {
         ExprType::Mul
     }
 
+    // Ergibt 'e1.pretty_clever() * e2.pretty_clever()'
+    // Sollte e1 oder e2 eine PlusExpr sein wird der spezifische ausdruck umklammert (Punkt vor Strich Regel)
     fn pretty_clever(&self) -> String {
+        // Hilfsfunktion zum reduzieren von code replikationen
+        // Diese Methode ist nur innerhalb von pretty_clever() aufrufbar
         fn pretty_val(e: &ExprBox) -> String {
             if let ExprType::Plus = e.expr_type() {
                 format!("({})", e.pretty_clever())
@@ -143,6 +161,8 @@ impl MulExpr {
     }
 }
 
+// Unit tests. Jeder funktion von Expr(außer as_any) wurde ein eigenes Module gewidmet
+// Die Beispiel sind dabei in den Modulen großenteils identisch
 #[cfg(test)]
 mod tests {
     use super::*;

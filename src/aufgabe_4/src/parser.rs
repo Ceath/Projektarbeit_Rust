@@ -1,6 +1,8 @@
 use crate::ast::{ExprBox, IntExpr, MulExpr, PlusExpr};
 use crate::tokenizer::{TokenT, Tokenizer};
 
+// Implementierung größtenteils analog zum C++ Original,
+// mit der erweiterung das alle Zahlen erkannt werden und der Code wurde etwas vereinfacht
 pub struct Parser {
     tokenizer: Tokenizer,
 }
@@ -54,9 +56,7 @@ impl Parser {
         };
 
         return match self.tokenizer.token {
-            TokenT::ZERO => int_exp(self, 0),
-            TokenT::ONE => int_exp(self, 1),
-            TokenT::TWO => int_exp(self, 2),
+            TokenT::NUM(n) => int_exp(self, n),
             TokenT::OPEN => {
                 self.tokenizer.next_token();
                 let e = self.parse_e();
@@ -81,10 +81,13 @@ impl Parser {
     }
 }
 
+// Tests aus testParser mit zusätzlichen Tests
+// Unit-Tests. Die Tests schreiben auch eine Ausgabe zum betrachten der Werte
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    // Hilfsfunktion zum darstellen, gibt pretty_clever() der geparsten Expr bei erfolg zurück, sonst 'nothing'
     fn display_full(s: &str) -> String {
         let mut p = Parser::new(s.to_string());
         let expr = p.parse();
@@ -141,5 +144,10 @@ mod tests {
     #[test]
     fn test_parse_9() {
         assert_eq!("nothing", display_full(""));
+    }
+
+    #[test]
+    fn test_parse_10() {
+        assert_eq!("10 + 233 * 151", display_full("(10 + (233 * 151)"));
     }
 }
