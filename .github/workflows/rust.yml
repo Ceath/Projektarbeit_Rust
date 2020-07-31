@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
@@ -14,9 +15,23 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      AUFGABE_1: src/aufgabe_1/Cargo.toml
+      AUFGABE_2: src/aufgabe_2/Cargo.toml
+      AUFGABE_3: src/aufgabe_3/Cargo.toml
+      AUFGABE_4: src/aufgabe_4/Cargo.toml
+      
     steps:
     - uses: actions/checkout@v2
     - name: Build
-      run: cargo build --verbose
+      run: |
+        cargo build --manifest-path $AUFGABE_1 --verbose
+        cargo build --manifest-path $AUFGABE_2 --verbose
+        cargo build --manifest-path $AUFGABE_3 --verbose
+        cargo build --manifest-path $AUFGABE_4 --verbose
     - name: Run tests
-      run: cargo test --verbose
+      run: |
+        cargo test --manifest-path $AUFGABE_1 --verbose
+        cargo test --manifest-path $AUFGABE_2 --verbose
+        cargo test --manifest-path $AUFGABE_3 --verbose
+        cargo test --manifest-path $AUFGABE_4 --verbose
