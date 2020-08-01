@@ -1,6 +1,6 @@
 use std::str::Chars;
 use std::string::String;
-use test_functions::TestCase;
+use tests::TestCase;
 
 fn main() {
     let test_data = vec![
@@ -16,7 +16,7 @@ fn main() {
              ("reverse_rust", reverse_rust)];
 
     for (name, func) in &test_functions {
-        let errors = test_functions::test_function(&test_data, name, func );
+        let errors = tests::test_function(&test_data, name, func );
         println!("Function '{}' detected {} errors!\n", name, errors);
     }
 }
@@ -34,7 +34,7 @@ fn reverse(mut text_pointer: Chars) -> String {
     while let Some(_) = test_pointer_copy.next() {
         size +=1;
     }
-
+    
     // initialisierung des output vectors mit der erkannten größe
     reverse_string = vec!['\0'; size];
 
@@ -113,7 +113,7 @@ mod part_b {
 }
 
 // Testkonstrukt analog zu Aufgabe1
-mod test_functions {
+mod tests {
     use super::*;
 
     fn print_result(input: &str, expected: &str, output: &str, passed: bool) {
