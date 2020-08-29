@@ -2,8 +2,6 @@ pub mod custom_string {
     use std::ops::{Index, IndexMut, AddAssign};
     use std::fmt::{Display, Formatter, Result};
 
-    // Implementiert die Debug formatierung, dies erlaubt die ausgabe von CString view {:?}
-    #[derive(Debug)]
     pub struct CString {
         pub size: usize,
         // Wie in Aufgabe2 wird hier eine Vec verwendet da dieser leichter zu verändern ist.
@@ -69,7 +67,7 @@ pub mod custom_string {
 
         // Move konstruktor, hierbei wird ein tatsächlich ein neuer CString angelegt und die felder von input dahin bewegt.
         // Dies konsumiert input.
-        // Da Rust standardmäßig variable mit = bewegt ist dieser konstruktor eigentlich sinnlos
+        // Da Rust standardmäßig variablen mit = bewegt wird dieser Konstruktor eigentlich nicht benötigt
         pub fn new_move(input: CString) -> CString {
             CString {
                 size: input.size,

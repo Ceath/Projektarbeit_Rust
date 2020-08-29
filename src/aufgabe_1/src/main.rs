@@ -59,7 +59,7 @@ fn extract_c<'a>(text: &'a str, pattern: &str) -> &'a str
             // iteriert über pattern
             while let Some(pattern_char) = pattern_pos.next() {
                 // vergleicht den aktuellen char von pattern mit dem char der inneren text iteration,
-                // wenn diese ungleich sind, ist patter nicht in der direkten folge text_position enthalten
+                // wenn diese ungleich sind, ist pattern nicht in der direkten folge text_position enthalten
                 if inner_text_position.next() != Some(pattern_char) {
                     text_equal = false;
                     break;
@@ -88,13 +88,13 @@ fn extract_rust<'a>(text: &'a str, pattern: &str) -> &'a str {
 mod test {
 
     // Struct welches eine Testfall beschreibt mit Eingabe und erwarteter Ausgabe
-    // Das Struct besitzt die Felder
+    // Das Struct übernimmt ownership der Felder
     pub struct TestCase {
         pub input: String,
         pub pattern: String,
         pub expected: String
     }
-
+ 
     impl TestCase {
         // Konstruktor für TestCase
         pub fn new(input: String, pattern: String, expected: String) -> TestCase {
@@ -104,11 +104,13 @@ mod test {
         }
     }
 
+    // Einfacher Enum
     pub enum TestResult {
         Passed,
         Failed
     }
 
+    // Ein Template T wird benötigt um das Closure zu beschreiben
     pub fn run_test<T>(test_case: &TestCase, extract_function: T) -> TestResult
     where T: for<'a> Fn(&'a str, &str) -> &'a str {
         let output = extract_function(&test_case.input, &test_case.pattern);

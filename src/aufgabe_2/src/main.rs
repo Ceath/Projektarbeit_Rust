@@ -71,7 +71,7 @@ mod part_b {
 
     // iteriert über input_pointer n mal und fügt weißt dabei jeden char der aktuellen position von output_pointer zu.
     // IterMut sind iteratoren welche das zuweisen ermöglichen.
-    // unwrap() entpackt ein Option<T> auf T (hier is T =  &mut char), sollte die Option jedoch kein wert enthalten führt das zur einem panic (exception),
+    // unwrap() entpackt ein Option<T> auf T (hier ist T =  &mut char), sollte die Option jedoch kein wert enthalten führt das zur einem panic (exception),
     // das bedeutet das input_pointer und output_pointer mindestens n elemente lang sein müssen
     pub fn copy(mut input_pointer: Iter<char>, n: usize, mut output_pointer: IterMut<char>) {
         for _ in 0..n {

@@ -4,7 +4,7 @@ use std::boxed::Box;
 pub type ExprBox = Box<dyn Expr>;
 
 // Eq und PartialEQ erlauben das vergleichen von ExprType Werten via == oder !=
-// Debug erlaubt das darstellen eines Enum-Wertes als String. z.B. ExprType::Int:= 'Int'
+// Debug erlaubt das darstellen eines Enum-Wertes als String. Also ExprType::Int:= "Int"
 #[derive(Eq, PartialEq, Debug)]
 pub enum ExprType {
     Int,
