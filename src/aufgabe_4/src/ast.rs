@@ -15,13 +15,13 @@ pub enum ExprType {
 // Interface für Expr
 pub trait Expr {
     fn eval(&self) -> i32;
-    // vorgegeben pretty implementierung
+    // Vorgegeben pretty implementierung
     fn pretty(&self) -> String;
-    // dient zum erkennen des Typs der Expr
+    // Dient zum erkennen des Typs der Expr
     fn expr_type(&self) -> ExprType;
     // Teilaufgabe 1 Syntax. pretty mit schlauerer klammerung
     fn pretty_clever(&self) -> String;
-    // wird zum cast einer trait reference zu dem eigentlichen Struct des Objekts benötigt
+    // Wird zum cast einer trait reference zu dem eigentlichen Struct des Objekts benötigt
     fn as_any(&self) -> &dyn std::any::Any;
 }
 
