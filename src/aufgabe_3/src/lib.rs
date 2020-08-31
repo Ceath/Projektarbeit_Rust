@@ -5,9 +5,9 @@ pub mod custom_string {
     pub struct CString {
         pub size: usize,
         // Wie in Aufgabe2 wird hier eine Vec verwendet da dieser leichter zu verändern ist.
-        // Dabei wird kein \0 als endzeichen verwendet da ein Vec immer seine eigene länge kennt.
-        // Rust Arrays müssen eine bekannte länge beim compilieren besitzen, deshalb wird hier ein Vec verwendet
-        // pub (super) bedeutet dabei das diese Feld für alle module/funktionen in dieser datei öffentlich ist, dies dient zu testzwecken.
+        // Dabei wird kein '\0' als Endzeichen verwendet, da ein Vec immer seine eigene länge kennt.
+        // Rust Arrays müssen eine feste Länge beim compilieren besitzen, deshalb wird hier ein Vec verwendet
+        // pub (super) bedeutet dabei das diese Feld für alle module/funktionen in dieser datei öffentlich ist, dies dient zu Testzwecken.
         pub (super) vec: Vec<char>
     }
 
@@ -75,7 +75,7 @@ pub mod custom_string {
             }
         }
 
-        // Rust erlaubt nicht das überschreiben des = operators, deshalb wird es hier als einfache Funktion dargestellt
+        // Zuweisungsfunktion
         pub fn assign(&mut self, rhs: &CString) {
             *self = CString::new_string(rhs);
         }
@@ -106,8 +106,8 @@ pub mod custom_string {
     }
 
     // Überschreibung von +=
-    // Erstellt einen neuen Vec mit der sum der beiden größen
-    // Dieser wird mit den inhalt der beiden CStrings befüllt
+    // Erstellt einen neuen Vec mit der Summe der beiden Größen
+    // Dieser wird mit den Inhalt der beiden CStrings befüllt
     impl AddAssign<&CString> for CString {
         fn add_assign(&mut self, rhs: &Self) {
             let new_size = self.size + rhs.size;
@@ -124,11 +124,11 @@ pub mod custom_string {
     }
 
     // Dies ermöglicht die darstellung bei Formatierungen analog zum << operator in C++
-    // erlaubt die verwendung von z.B. println!("{}", CString-instance)
+    // Erlaubt die verwendung von z.B. println!("{}", CString-instance)
     impl Display for CString {
         fn fmt(&self, f: &mut Formatter<'_>) -> Result {
             for i in 0..self.size {
-                // Sollte write! einen Err zurückgeben wird dieser aufgrund des ? operators als rückgabewert verwendet werden
+                // Sollte write! einen Err zurückgeben wird dieser aufgrund des ? operators als Rückgabewert verwendet werden
                 write!(f, "{}", self[i])?
             }
             Ok(())
@@ -136,7 +136,7 @@ pub mod custom_string {
     }
 }
 
-// Unit tests für alle methoden von CString. Unit tests werden mithilfe von 'cargo test' ausgeführt
+// Unit-Tests für alle Methoden von CString. Unit-Tests werden mithilfe von 'cargo test' ausgeführt
 #[cfg(test)]
 mod tests {
     use super::custom_string::CString;

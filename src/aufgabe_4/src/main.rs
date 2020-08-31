@@ -10,6 +10,7 @@ fn main() {
 }
 
 fn expr_examples() {
+    // Interne Funktion zur Ausgabe
     fn print<T: Expr>(expr: &T) {
         println!(
             "Expr '{}' to clever:= '{}', eval:= {}",
@@ -20,8 +21,8 @@ fn expr_examples() {
     }
 
     println!("Expr Examples:");
+
     // (5 + (10 + 3))
-    // Verwendet den Template Konstruktor
     let plus = PlusExpr::new(
         IntExpr::new(5),
         PlusExpr::new(IntExpr { val: 10 }, IntExpr { val: 3 }),
@@ -113,6 +114,7 @@ fn vm_parser_examples() {
         );
     }
     {
+        // (7 * ((5 + (10 + 3)) * 2))
         let expr: ExprBox = Box::new(MulExpr::new(
             IntExpr::new(7),
             MulExpr::new(

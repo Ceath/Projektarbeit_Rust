@@ -9,7 +9,7 @@ fn main() {
         TestCase::new("Foo", "ooF"),
         TestCase::new("","")];
 
-    // Die test funktionen für reverse, reverse_rec and reverse_rust. reverse verwendet einen closure um von &str zu Chars zu konvertieren
+    // Die test funktionen für reverse, reverse_rec and reverse_rust. reverse verwendet einen Closure um von &str zu Chars zu konvertieren
     let test_functions: Vec<(&str, fn(&str)-> String)> =
         vec![("reverse", |word: &str| reverse(word.chars())),
              ("reverse_rec", part_b::reverse_rec_str),
@@ -22,36 +22,36 @@ fn main() {
 }
 
 // reverse nach c art.
-// Zuerst wird die größe des inputs ermittelt, anschließend wird ein Vec<char> mit der entsprechend größe initialisiert
+// Zuerst wird die größe des inputs ermittelt, anschließend wird ein Vec<char> mit der entsprechend Größe initialisiert
 // und von hinten nach vorne aufgefüllt.
 fn reverse(mut text_pointer: Chars) -> String {
     let mut reverse_string;
     let mut size = 0;
-    // da .next() einen iterator konsumiert, muss eine kopie erstellt werden damit zweimal über den input iteriert werden kann
+    // Da .next() einen iterator konsumiert, muss eine kopie erstellt werden damit zweimal über den input iteriert werden kann
     let mut test_pointer_copy = text_pointer.clone();
 
-    // iteration zum erkennen der länge
+    // Iteration zum erkennen der Länge
     while let Some(_) = test_pointer_copy.next() {
         size +=1;
     }
     
-    // initialisierung des output vectors mit der erkannten größe
+    // Initialisierung des output vektors mit der erkannten Größe
     reverse_string = vec!['\0'; size];
 
-    // erneutes iterieren über den input, jeder char wird an der letzten nicht verwendeten position von reverse_string gesetzt
+    // Erneutes iterieren über den input, jeder char wird an der letzten nicht verwendeten position von reverse_string gesetzt
     while let Some(x) = text_pointer.next() {
         reverse_string[size-1] = x;
         size -=1;
     }
 
-    // konvertierung von reverse_string zu einen String, reverse_string wird dabei konsumiert
+    // Konvertierung von reverse_string zu einen String, reverse_string wird dabei konsumiert
     reverse_string.into_iter().collect::<String>()
 }
 
 fn reverse_rust(input: &str) -> String {
-    // einige iteratoren bieten eine rev() methode an welche die richtung auf rechts -> links umstellt,
-    // beginnend am ende des iterators und endend an der aktuellen position.
-    // Diese neue iterator wird dann in einen String konvertiert
+    // Einige iteratoren bieten eine rev() methode an welche die richtung auf rechts -> links umstellt,
+    // beginnend am ende des iterators und enden an der aktuellen Position.
+    // Dieser neue Iterator wird dann in einen String konvertiert
     input.chars().rev().collect::<String>()
 }
 
@@ -69,7 +69,7 @@ mod part_b {
         len
     }
 
-    // iteriert über input_pointer n mal und fügt weißt dabei jeden char der aktuellen position von output_pointer zu.
+    // Iteriert über input_pointer n mal und fügt weißt dabei jeden char der aktuellen position von output_pointer zu.
     // IterMut sind iteratoren welche das zuweisen ermöglichen.
     // unwrap() entpackt ein Option<T> auf T (hier ist T =  &mut char), sollte die Option jedoch kein wert enthalten führt das zur einem panic (exception),
     // das bedeutet das input_pointer und output_pointer mindestens n elemente lang sein müssen
@@ -79,8 +79,8 @@ mod part_b {
         }
     }
 
-    // Erstellt einen neuen Vec<char> mit der länge von input +1,
-    // kopiert den inhalt von input an den anfang und setzt das letzte zeichen auf c bevor der Vec zurückgeben wird
+    // Erstellt einen neuen Vec<char> mit der Länge von (input+1),
+    // kopiert den Inhalt von input an den anfang und setzt das letzte Zeichen auf c bevor der Vec zurückgeben wird
     pub fn put_back(input: Iter<char>, c: char ) -> std::vec::Vec<char> {
         let length = length(input.clone());
         // hier wird ein Vec<char> verwendet da bei diesen die char werte leichter veränderbar sind.
@@ -91,16 +91,16 @@ mod part_b {
         output
     }
 
-    // Wrapper für reverse_rec welcher die eingabe als &str erlaubt und einen String zurückgibt
+    // Wrapper für reverse_rec welcher die Eingabe als &str erlaubt und einen String zurückgibt
     pub fn reverse_rec_str(input: &str) -> String {
         reverse_rec(input.chars().collect::<std::vec::Vec<char>>().iter()).into_iter().collect()
     }
 
 
-    // Prüft und merkt den aktuelle wert von input, anschließend wird reverse_rec() recursive aufgerufen
+    // Prüft und merkt den aktuellen Wert von input, anschließend wird reverse_rec() recursive aufgerufen
     // mit der nächsten position von input.
-    // An dieser rückgabe wird der aktuelle char am ende angefügt.
-    // Wenn input leer ist wird eine leerer Vec zurückgegeben. Dies ist die endbedienung der Rekursiven funktion
+    // An dieser Rückgabe wird der aktuelle char am ende angefügt.
+    // Wenn input leer ist wird eine leerer Vec zurückgegeben. Dies ist die Endbedienung der rekursiven Funktion
     pub fn reverse_rec(mut input: Iter<char>) -> std::vec::Vec<char> {
         if let Some(c) = input.next() {
             let reverse = reverse_rec(input);

@@ -5,7 +5,7 @@ use std::ops::{Deref, DerefMut};
 #[derive(Debug, Eq, PartialEq)]
 pub enum TokenT {
     EOS,
-    // Tokenizer wurde erweiterter um alle (positiven) numerischen werte zu erkennen, nicht nur 0, 1 und 2
+    // Tokenizer wurde erweitert um alle (positiven) numerischen werte zu erkennen, nicht nur 0, 1 und 2
     NUM(i32),
     OPEN,
     CLOSE,
@@ -98,7 +98,7 @@ impl Tokenizer {
 
 // Rust erlaubt nicht das vererben von Structs und die verwendung eines Trait ist aufwändig da jede funktion extra manuell implementiert werden müsste
 // Deref ermöglicht das aufrufen aller funktionen von Tokenize
-// Deref ist vergleichbar mit dem Überschreiben des ->(Pointer) Operator in C++
+// Deref ist vergleichbar mit dem Überschreiben des *(Pointer) Operator in C++
 impl Deref for Tokenizer {
     type Target = Tokenize;
 

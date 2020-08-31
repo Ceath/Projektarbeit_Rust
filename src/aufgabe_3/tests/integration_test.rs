@@ -1,5 +1,5 @@
 #[cfg(test)]
-// Integration-Tests der beide main() funktionen aus der aufgabenstellung
+// Integration-Tests der beide main() funktionen aus der Aufgabenstellung
 mod integration_tests {
     use aufgabe_3::custom_string::CString;
 

@@ -91,7 +91,7 @@ impl VM {
 }
 
 // Erlaubt das direkt Konvertieren eines &str zu einer VM
-// Verwendet dafür parser zum Konvertieren auf Expr und anschließend vm_parser zum parsen von Expr zu VM
+// Verwendet dafür Parser zum Konvertieren auf Expr und anschließend vm_parser zum parsen von Expr zu VM
 impl TryFrom<&str> for VM {
     type Error = ();
 
