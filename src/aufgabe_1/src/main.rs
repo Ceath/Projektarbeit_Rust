@@ -13,7 +13,7 @@ fn main() {
 
     // Dictionary welches die unterschiedlichen extract funktionen beinhaltet
     // Die Keys stellen den funktionsnamen dar
-    // Die Values sind die zu testenden funktion, dargestellt mit closures (Lambdas)
+    // Die Values sind die zu testende funktion, dargestellt mit closures (Lambdas)
     let mut functions: HashMap<&str, for<'a> fn(&'a str, &str) -> &'a str> = std::collections::HashMap::new();
     functions.insert("extract_c", extract_c);
     functions.insert("extract_rust", extract_rust);
@@ -37,7 +37,7 @@ fn main() {
 // Vereinfacht ausgedrückt iteriert diese funktion über jeden char von text und überprüft dabei ob die nachfolgenden chars dem pattern entsprechen.
 // Da das kopieren der Parameter nicht benötigt wird und diese funktion keine ownership übernehmen sollte/muss,
 // werden die Parameter als &str dargestellt
-// Zurückgegeben wird ein slice des text parameters, hierfür muss die Lebenszeit 'a angegeben werden
+// Zurückgegeben wird ein slice des "text" parameters, hierfür muss die Lebenszeit 'a angegeben werden
 fn extract_c<'a>(text: &'a str, pattern: &str) -> &'a str
 {
     // Stellt die position in der äußeren iteration über text dar
@@ -47,19 +47,19 @@ fn extract_c<'a>(text: &'a str, pattern: &str) -> &'a str
 
     // Iteration über text bis text_position.next() ein None zurückgibt (dann wurde durch ganz text iteriert)
     while let Some(current_text_char) = text_position.next() {
-        // zeiger auf pattern, wird bei jeder äußeren iteration auf den anfang gesetzt
+        // Zeiger auf pattern, wird bei jeder äußeren iteration auf den anfang gesetzt
         let mut pattern_pos = pattern.chars();
-        // kopie von text_position damit im inneren weiter über text iteriert werden kann ohne text_position zu verändern
+        // Kopie von text_position damit im inneren weiter über text iteriert werden kann ohne text_position zu verändern
         let mut inner_text_position = text_position.clone();
         // Speichert ob ab dieser text_position als nächstes pattern vorkommt
         let mut text_equal = true;
 
         // Überprüft ob der char von text_position und der char in pattern identisch sind
         if pattern_pos.next() == Some(current_text_char) {
-            // iteriert über pattern
+            // Iteriert über pattern
             while let Some(pattern_char) = pattern_pos.next() {
-                // vergleicht den aktuellen char von pattern mit dem char der inneren text iteration,
-                // wenn diese ungleich sind, ist patter nicht in der direkten folge text_position enthalten
+                // Vergleicht den aktuellen char von pattern mit dem char der inneren text iteration,
+                // wenn diese ungleich sind, ist pattern nicht in der direkten folge text_position enthalten
                 if inner_text_position.next() != Some(pattern_char) {
                     text_equal = false;
                     break;
@@ -77,24 +77,24 @@ fn extract_c<'a>(text: &'a str, pattern: &str) -> &'a str
     suffix_position.as_str()
 }
 
-// Diese Funktion verwendet standard rust Funktionen von str
+// Diese Funktion verwendet standard Rust Funktionen von str
 fn extract_rust<'a>(text: &'a str, pattern: &str) -> &'a str {
-    // split() teilt text bei jeden vorkommen von pattern auf und gibt einen iterator zurück
-    // collect() wandelt den iterator in eine Vec um
-    // von diesen vector wird dann das letzte element zurückgegeben
+    // split() teilt text bei jeden vorkommen von pattern auf und gibt einen Iterator zurück
+    // collect() wandelt den Iterator in eine Vec um
+    // Von diesem vector wird dann das letzte element zurückgegeben
     text.split(pattern).collect::<Vec<&str>>().last().unwrap()
 }
 
 mod test {
 
     // Struct welches eine Testfall beschreibt mit Eingabe und erwarteter Ausgabe
-    // Das Struct besitzt die Felder
+    // Das Struct übernimmt ownership der Felder
     pub struct TestCase {
         pub input: String,
         pub pattern: String,
         pub expected: String
     }
-
+ 
     impl TestCase {
         // Konstruktor für TestCase
         pub fn new(input: String, pattern: String, expected: String) -> TestCase {
@@ -104,11 +104,13 @@ mod test {
         }
     }
 
+    // Einfacher Enum
     pub enum TestResult {
         Passed,
         Failed
     }
 
+    // Ein Template T wird benötigt um das Closure zu beschreiben
     pub fn run_test<T>(test_case: &TestCase, extract_function: T) -> TestResult
     where T: for<'a> Fn(&'a str, &str) -> &'a str {
         let output = extract_function(&test_case.input, &test_case.pattern);

@@ -24,7 +24,7 @@ impl VMParser {
         new_mul()
     }
 
-    //Parse eine PlusExpr
+    // Parse eine PlusExpr
     // hängt zuerst den Code aus e1 und anschließend den aus e2 an self.code an bevor PLUS zurückgegeben wird
     fn parse_plus(&mut self, e: &PlusExpr) -> Code {
         let e_as_plus = e.as_any().downcast_ref::<PlusExpr>().unwrap();

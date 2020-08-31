@@ -4,7 +4,7 @@ use std::boxed::Box;
 pub type ExprBox = Box<dyn Expr>;
 
 // Eq und PartialEQ erlauben das vergleichen von ExprType Werten via == oder !=
-// Debug erlaubt das darstellen eines Enum-Wertes als String. z.B. ExprType::Int:= 'Int'
+// Debug erlaubt das darstellen eines Enum-Wertes als String. Also ExprType::Int:= "Int"
 #[derive(Eq, PartialEq, Debug)]
 pub enum ExprType {
     Int,
@@ -15,13 +15,13 @@ pub enum ExprType {
 // Interface für Expr
 pub trait Expr {
     fn eval(&self) -> i32;
-    // vorgegeben pretty implementierung
+    // Vorgegeben pretty implementierung
     fn pretty(&self) -> String;
-    // dient zum erkennen des Typs der Expr
+    // Dient zum erkennen des Typs der Expr
     fn expr_type(&self) -> ExprType;
     // Teilaufgabe 1 Syntax. pretty mit schlauerer klammerung
     fn pretty_clever(&self) -> String;
-    // wird zum cast einer trait reference zu dem eigentlichen Struct des Objekts benötigt
+    // Wird zum cast einer trait reference zu dem eigentlichen Struct des Objekts benötigt
     fn as_any(&self) -> &dyn std::any::Any;
 }
 

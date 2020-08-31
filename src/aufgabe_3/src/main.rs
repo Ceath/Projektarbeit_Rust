@@ -1,7 +1,7 @@
 use aufgabe_3::custom_string::CString;
 
 // Testausgabe für CString.
-// Hinweis CString befindet sich in lib.rs, da dies erlaubt unit-tests für das Struct zu schreiben
+// Hinweis CString befindet sich in lib.rs, da dies erlaubt es Unit-Tests für das Struct zu schreiben
 fn main() {
     let mut s1 = CString::new_empty();
     let mut s2 = CString::new_str("Hello");

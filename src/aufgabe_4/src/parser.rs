@@ -87,7 +87,7 @@ impl Parser {
 mod tests {
     use super::*;
 
-    // Hilfsfunktion zum darstellen, gibt pretty_clever() der geparsten Expr bei erfolg zurück, sonst 'nothing'
+    // Hilfsfunktion zum darstellen, gibt pretty_clever() der geparsten Expr bei Erfolg zurück, sonst 'nothing'
     fn display_full(s: &str) -> String {
         let mut p = Parser::new(s.to_string());
         let expr = p.parse();
